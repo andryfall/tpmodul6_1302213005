@@ -37,7 +37,7 @@ public class SayaTubeVideo
 
     public SayaTubeVideo(string title)
     {
-        Contract.Requires(title != null);
+        Contract.Requires(title != null && title.Length <= 100);
         Random rand = new Random();
         this.title = title;
         this.id = rand.Next();
