@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics.Contracts;
+
 class program
 {
     static void Main(string[] args)
@@ -7,6 +9,23 @@ class program
         SayaTubeVideo t = new SayaTubeVideo("Tutorial Design By Contract - Andry Nur Falah");
         t.IncreasePlayCount(60);
         t.PrintVideoDetails();
+
+        Console.WriteLine(" ");
+
+        SayaTubeVideo tes1 = new SayaTubeVideo("Test Overflow Execption");
+        tes1.IncreasePlayCount(60);
+        int a = int.MaxValue;
+        tes1.IncreasePlayCount(a);
+        tes1.PrintVideoDetails();
+
+        Console.WriteLine(" ");
+
+        SayaTubeVideo tes2 = new SayaTubeVideo(null);
+        tes2.IncreasePlayCount(60);
+        tes2.IncreasePlayCount(100000010);
+        tes2.PrintVideoDetails();
+
+
     }
 }
 
@@ -18,6 +37,7 @@ public class SayaTubeVideo
 
     public SayaTubeVideo(string title)
     {
+        Contract.Requires(title != null);
         Random rand = new Random();
         this.title = title;
         this.id = rand.Next();
@@ -26,7 +46,19 @@ public class SayaTubeVideo
 
     public void IncreasePlayCount(int playCount)
     {
-        this.playCount += playCount;
+        Contract.Requires(playCount <= 10000000);
+
+        try
+        {
+            checked
+            {
+                this.playCount += playCount; ;
+            }
+        }
+        catch (OverflowException e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 
     public void PrintVideoDetails()
